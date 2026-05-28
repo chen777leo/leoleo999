@@ -593,7 +593,17 @@ function renderCats(){
     `<button class="cat-tab ${c.id==='techinterview'?'ti-tab':''} ${S.cat===c.id?'active':''}" onclick="selCat('${c.id}')">${c.icon} ${c.label}</button>`
   ).join('');
 }
-function selCat(id){S.cat=id;renderCats();renderScenes();}
+function selCat(id){
+  S.cat=id;
+  renderCats();
+  renderScenes();
+  // 切换分类时自动展开场景列表
+  if(sceneGridCollapsed){
+    sceneGridCollapsed=false;
+    document.getElementById('sceneGrid').classList.remove('collapsed');
+    document.getElementById('sceneToggleBtn').textContent='收起 ▲';
+  }
+}
 function renderScenes(){
   const g=document.getElementById('sceneGrid');
   if(S.cat==='techinterview'){
