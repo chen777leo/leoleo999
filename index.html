@@ -80,7 +80,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .scene-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .scene-toggle{font-size:11px;color:var(--muted);background:none;border:1px solid var(--border);border-radius:20px;padding:3px 10px;cursor:pointer;font-family:inherit;transition:all .2s}
 .scene-toggle:hover{border-color:var(--fg);color:var(--fg)}
-.scene-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px;transition:all .3s}
+.scene-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:6px;transition:all .3s}
 .scene-grid.collapsed{display:none}
 .scene-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:11px 12px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:3px}
 .scene-card:hover{border-color:rgba(26,26,46,.22);background:#edeae3;transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.04)}
@@ -95,6 +95,16 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .scene-card.be{border-left:3px solid #b45309}.scene-card.bn{border-left:3px solid #2e7d32}
 .scene-card.bs{border-left:3px solid #6b21a8}.scene-card.bg{border-left:3px solid #1a56c4}
 .ti-sec{grid-column:1/-1;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:6px 0 5px;border-bottom:1px solid var(--border);margin-bottom:3px}
+/* ── 场景二级布局新增 ── */
+.scene-grid{grid-template-columns:repeat(auto-fill,minmax(148px,1fr))}
+.scene-card{flex-direction:row;align-items:center;gap:8px;padding:9px 11px}
+.sc-icon{font-size:16px;flex-shrink:0;margin-bottom:0}
+.sc-text{display:flex;flex-direction:column;gap:1px;min-width:0;flex:1}
+.sc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cat-rand-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.cat-rand-btn{font-size:11px;padding:4px 12px;border-radius:20px;border:1.5px solid rgba(109,40,217,.22);background:#f5f3ff;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s;white-space:nowrap}
+.cat-rand-btn:hover{background:#ede9fe;border-color:#7c3aed}
 
 /* ══════════════════════════════════════════
    IMMERSIVE LAYOUT  —  主对话 + 右侧助教
@@ -502,57 +512,127 @@ function updateProviderStatus(){
 // ══════════════════════════════════════════
 const CATS=[
   {id:'daily',label:'日常生活',icon:'🏡',scenes:[
-    {id:'conbini',icon:'🏪',name:'コンビニ',sub:'会計・レジ対応',av:'CVS',role:'コンビニ店員',ctx:'レジでの会計、温め、宅配便受取、ATM案内'},
-    {id:'supermart',icon:'🛒',name:'スーパー',sub:'買い物・値段確認',av:'店',role:'スーパーの店員',ctx:'商品の場所案内、値段確認、特売品説明、袋の有無'},
-    {id:'restaurant',icon:'🍜',name:'レストラン',sub:'注文・おすすめ',av:'飯',role:'レストランの店員',ctx:'席案内、注文受付、おすすめ料理の説明、追加注文、お会計'},
-    {id:'izakaya',icon:'🍶',name:'居酒屋',sub:'飲み会・注文',av:'酒',role:'居酒屋の店員',ctx:'飲み物・食べ物の注文、おすすめ、締めの一品、お会計'},
-    {id:'cafe',icon:'☕',name:'カフェ',sub:'ドリンク注文・持帰り',av:'珈',role:'カフェの店員',ctx:'ドリンク・フードの注文、カスタマイズ、テイクアウト対応'},
-    {id:'pharmacy',icon:'💊',name:'薬局',sub:'薬・症状の相談',av:'薬',role:'薬剤師',ctx:'症状を聞いて薬を提案、用法説明、処方箋対応'},
-    {id:'beauty',icon:'✂️',name:'美容院',sub:'カット・スタイル相談',av:'髪',role:'美容師',ctx:'カットスタイルの相談、シャンプー、カラー、施術説明'},
-    {id:'laundry',icon:'👕',name:'クリーニング',sub:'衣類の預け・受取',av:'洗',role:'クリーニング店員',ctx:'衣類の預け入れ、素材確認、日数説明、受取'},
+    {id:'conbini',icon:'🏪',name:'コンビニ',sub:'レジ・温め・ATM',av:'CVS',role:'コンビニ店員',ctx:'レジでの会計、商品の温め依頼、宅配便受取・発送、ATM・マルチコピー機案内、公共料金支払い'},
+    {id:'supermart',icon:'🛒',name:'スーパー',sub:'買物・値段・特売',av:'店',role:'スーパーの店員',ctx:'商品の場所案内、値段・賞味期限確認、特売品説明、袋の有無、ポイントカード、セルフレジ'},
+    {id:'restaurant',icon:'🍜',name:'レストラン',sub:'席・注文・アレルギー',av:'飯',role:'レストランの店員',ctx:'席案内・禁煙席確認、注文受付、アレルギー確認、おすすめ料理、追加注文、お会計'},
+    {id:'izakaya',icon:'🍶',name:'居酒屋',sub:'飲み会・コース・会計',av:'酒',role:'居酒屋の店員',ctx:'飲み放題コース説明、料理の注文、締めの一品提案、幹事として注文まとめ、割り勘計算'},
+    {id:'cafe',icon:'☕',name:'カフェ',sub:'注文・カスタム・テイクアウト',av:'珈',role:'カフェの店員',ctx:'ドリンクの注文、サイズ・ミルク・砂糖のカスタマイズ、テイクアウト、Wi-Fi・電源確認'},
+    {id:'fastfood',icon:'🍔',name:'ファストフード',sub:'セット・サイズ・支払い',av:'FF',role:'ファストフード店員',ctx:'セットメニューの選択、サイズアップ、バーガーのカスタマイズ、テイクアウト・店内選択'},
+    {id:'ramen',icon:'🍥',name:'ラーメン屋',sub:'麺・スープ・トッピング',av:'麺',role:'ラーメン店員',ctx:'券売機の使い方、麺の硬さ・スープ濃度・脂量・トッピング選択、替え玉注文'},
+    {id:'sushi',icon:'🍣',name:'回転寿司',sub:'注文・おすすめ・精算',av:'寿',role:'寿司屋の店員',ctx:'お好みの寿司注文、本日のおすすめネタ、タッチパネル注文、シャリの大きさ、お会計'},
+    {id:'yakiniku',icon:'🥩',name:'焼肉屋',sub:'部位・焼き方・コース',av:'肉',role:'焼肉屋の店員',ctx:'肉の部位説明、おすすめ食べ方・焼き加減、タレ・塩の使い分け、コース選択、追加注文'},
+    {id:'pharmacy',icon:'💊',name:'薬局・ドラッグ',sub:'症状相談・薬選び',av:'薬',role:'薬剤師',ctx:'風邪・頭痛・胃痛・花粉症の症状を聞いて薬を提案、用法・用量説明、処方箋対応'},
+    {id:'beauty',icon:'✂️',name:'美容院',sub:'スタイル・カラー・相談',av:'髪',role:'美容師',ctx:'カットスタイルの希望、長さ・量・カラー・パーマの相談、仕上がりイメージ確認'},
+    {id:'laundry',icon:'👕',name:'クリーニング',sub:'預け・染み・受取',av:'洗',role:'クリーニング店員',ctx:'衣類の素材・汚れ確認、日数・料金説明、染み抜き相談、仕上がり確認、受取'},
+    {id:'bookstore',icon:'📚',name:'本屋',sub:'本探し・取り寄せ',av:'本',role:'書店員',ctx:'本のタイトル・著者・ジャンルで検索、在庫確認、取り寄せ注文、雑誌コーナー案内'},
+    {id:'florist',icon:'🌸',name:'花屋',sub:'花束・ギフト・包装',av:'花',role:'花屋の店員',ctx:'花束の目的・予算・好みの花を聞く、季節の花の説明、ギフト包装、メッセージカード'},
+    {id:'shoes',icon:'👟',name:'靴屋',sub:'サイズ・試し履き・在庫',av:'靴',role:'靴屋の店員',ctx:'サイズの確認、試し履きの依頼、在庫確認、デザイン・色の相談、手入れ方法の説明'},
   ]},
-  {id:'transport',label:'交通出行',icon:'🚃',scenes:[
-    {id:'station',icon:'🚉',name:'駅・切符',sub:'乗り換え・路線案内',av:'駅',role:'駅員',ctx:'乗り換え案内、切符購入、ICカードチャージ、忘れ物'},
-    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・料金',av:'車',role:'タクシー運転手',ctx:'行き先を聞く、ルート確認、料金説明、おつり'},
-    {id:'bus',icon:'🚌',name:'バス',sub:'路線・停留所確認',av:'BUS',role:'バス運転手',ctx:'停留所の案内、料金、乗り継ぎの説明'},
-    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・案内',av:'空',role:'空港スタッフ',ctx:'チェックイン、手荷物預け、搭乗口案内'},
-    {id:'rental',icon:'🚗',name:'レンタカー',sub:'車の貸出・返却',av:'RC',role:'レンタカー店員',ctx:'車種説明、保険確認、燃料説明、返却手続き'},
+  {id:'food',label:'グルメ',icon:'🍱',scenes:[
+    {id:'cafe_chat',icon:'☕',name:'カフェで友人と雑談',sub:'近況・趣味・悩み',av:'友',role:'仲のいい日本人の友達',ctx:'近況報告、最近あったこと、趣味や好みの話、仕事・恋愛の悩み相談、週末の予定'},
+    {id:'lunch_office',icon:'🍱',name:'同僚とランチ',sub:'お店・仕事・雑談',av:'同',role:'同じ会社の日本人同僚',ctx:'今日どこにする、近くのおすすめの店、仕事の話・上司の話、お昼休みの過ごし方'},
+    {id:'food_talk',icon:'🍣',name:'グルメ情報交換',sub:'おすすめ店・料理・レシピ',av:'食',role:'食いしん坊な日本人知人',ctx:'好きな料理・おすすめのお店、食べてみたい料理、料理の作り方、食文化の違い'},
+    {id:'izakaya_party',icon:'🍻',name:'会社の飲み会',sub:'乾杯・注文・会話',av:'飲',role:'会社の先輩社員',ctx:'飲み会での自己紹介、乾杯の音頭、料理の注文、会社・仕事の話、先輩への質問'},
+    {id:'cooking',icon:'🥘',name:'料理・自炊の話',sub:'レシピ・食材・節約',av:'料',role:'料理好きな日本人',ctx:'最近作った料理、簡単レシピの紹介、食材の買い方・節約術、料理が苦手な悩み'},
+    {id:'teishoku',icon:'🍱',name:'定食屋',sub:'日替わり・おかず選び',av:'定',role:'定食屋のおばさん',ctx:'日替わり定食の説明、ご飯・汁物の量、追加おかずの案内、デザートの説明'},
+    {id:'convenience_eat',icon:'🥡',name:'コンビニランチ',sub:'おすすめ・温め・セット',av:'昼',role:'コンビニ店員',ctx:'今日のおすすめ弁当・惣菜、温め時間、ドリンクとのセット割引、デザート紹介'},
+    {id:'tea_ceremony',icon:'🍵',name:'お茶・抹茶体験',sub:'作法・道具・文化',av:'茶',role:'茶道の先生',ctx:'お茶の点て方・飲み方の作法、茶道具の説明、和菓子との組み合わせ、文化的背景'},
   ]},
-  {id:'public',label:'公共服务',icon:'🏛️',scenes:[
-    {id:'bank',icon:'🏦',name:'銀行',sub:'口座・电話確認',av:'銀',role:'銀行員',ctx:'口座開設、カード申込後の電話確認、在留資格確認'},
-    {id:'post',icon:'📮',name:'郵便局',sub:'荷物・海外送金',av:'郵',role:'郵便局員',ctx:'荷物の発送、国際郵便、料金説明、転送届'},
-    {id:'hospital',icon:'🏥',name:'病院',sub:'受付・診察',av:'医',role:'病院の受付',ctx:'症状を聞く、保険証確認、診察順番、処方箋説明'},
-    {id:'cityhall',icon:'🏢',name:'市役所',sub:'住民登録・手続き',av:'役',role:'市役所の窓口担当',ctx:'住民票、在留カード更新、マイナンバー、各種証明書'},
-    {id:'police',icon:'🚔',name:'警察署',sub:'届出・道案内',av:'警',role:'警察官',ctx:'落とし物届出、自転車盗難届、道案内'},
+  {id:'transport',label:'交通・移動',icon:'🚃',scenes:[
+    {id:'station',icon:'🚉',name:'駅・乗換え',sub:'路線・IC・忘れ物',av:'駅',role:'駅員',ctx:'乗り換え案内、切符購入、ICカードチャージ、忘れ物窓口、定期券購入・更新'},
+    {id:'taxi',icon:'🚕',name:'タクシー',sub:'行先・ルート・領収書',av:'車',role:'タクシー運転手',ctx:'行き先を告げる、道の選択（高速・一般道）、料金の目安、領収書の依頼、おつり'},
+    {id:'bus',icon:'🚌',name:'路線バス',sub:'停留所・料金・乗換',av:'BUS',role:'バス運転手',ctx:'目的の停留所確認、料金・交通系IC対応、乗り継ぎ方法、終バス時刻の確認'},
+    {id:'airport',icon:'✈️',name:'空港',sub:'チェックイン・手荷物',av:'空',role:'空港スタッフ',ctx:'チェックイン手続き、手荷物預け・機内持込制限、搭乗口案内、免税店の場所'},
+    {id:'shinkansen',icon:'🚄',name:'新幹線',sub:'指定席・変更・グリーン',av:'新',role:'新幹線の駅員',ctx:'座席指定・変更、グリーン車の案内、自由席の混雑状況、乗り継ぎ新幹線の確認'},
+    {id:'rental',icon:'🚗',name:'レンタカー',sub:'貸出・保険・返却',av:'RC',role:'レンタカー店員',ctx:'車種・排気量の説明、保険オプション確認、ETC・ナビ操作、燃料満タン返却'},
+    {id:'subway',icon:'🚇',name:'地下鉄',sub:'路線図・乗換・一日券',av:'地',role:'地下鉄駅員',ctx:'地下鉄路線の説明、乗り換え駅・方法、ICカードのチャージ、一日乗車券の案内'},
+    {id:'share_bike',icon:'🚲',name:'シェアサイクル',sub:'アプリ・ポート・返却',av:'自',role:'シェアサイクルスタッフ',ctx:'アプリの登録と使い方、近くのポートの探し方、返却ルール・延長料金の説明'},
+    {id:'highway_bus',icon:'🛣️',name:'高速・夜行バス',sub:'座席・休憩・荷物',av:'高',role:'高速バスの乗務員',ctx:'乗車時間・座席の確認、途中休憩の案内、荷物の収納場所、毛布・枕の使い方'},
+    {id:'lost_item',icon:'🔎',name:'落し物・遺失物',sub:'届出・特徴説明',av:'遺',role:'遺失物センター担当',ctx:'落し物の特徴・失くした場所・日時の説明、届出書類の記入方法、受け取り手続き'},
+  ]},
+  {id:'public',label:'行政・公共',icon:'🏛️',scenes:[
+    {id:'bank',icon:'🏦',name:'銀行窓口',sub:'口座・振込・手続き',av:'銀',role:'銀行員',ctx:'口座開設、ATMの使い方、振込手続き、通帳・カードの再発行、在留資格確認'},
+    {id:'post',icon:'📮',name:'郵便局',sub:'発送・書留・国際便',av:'郵',role:'郵便局員',ctx:'荷物の発送・サイズ・重量確認、書留・速達、国際郵便・EMS、転送届、ゆうちょ貯金'},
+    {id:'hospital_reg',icon:'🏥',name:'病院受付',sub:'初診・保険証・順番',av:'受',role:'病院の受付スタッフ',ctx:'初診・再診受付、保険証確認、問診票記入、症状説明、診察順番・待ち時間案内'},
+    {id:'cityhall',icon:'🏢',name:'市区役所',sub:'住民票・届出・申請',av:'役',role:'市役所の窓口担当',ctx:'住民票・戸籍謄本の申請、在留カード更新、マイナンバーカード申請、引越し届出'},
+    {id:'police',icon:'🚔',name:'警察・交番',sub:'届出・相談・道案内',av:'警',role:'警察官',ctx:'落とし物・盗難の届出、道の案内、トラブルの相談、迷子や事故の対応'},
+    {id:'immigration',icon:'🛂',name:'入管・ビザ',sub:'在留資格・更新・変更',av:'入',role:'入国管理局の職員',ctx:'在留資格の更新申請、必要書類の確認、ビザ種類変更の相談、在留期間の確認'},
+    {id:'tax_office',icon:'🧾',name:'確定申告',sub:'申告書・控除・還付',av:'税',role:'税務署の担当官',ctx:'確定申告の手続き説明、必要書類、医療費控除・ふるさと納税、副業の申告、還付金'},
+    {id:'health_ins',icon:'🏡',name:'社会保険・年金',sub:'加入・変更・給付',av:'福',role:'社会保険事務所担当',ctx:'国民健康保険の加入・変更手続き、年金手帳、失業給付・育児休業給付の申請'},
   ]},
   {id:'housing',label:'居住生活',icon:'🏠',scenes:[
-    {id:'realestate',icon:'🏠',name:'不動産',sub:'物件案内・契約',av:'不',role:'不動産会社の担当',ctx:'物件案内、家賃交渉、敷金礼金説明、契約手続き'},
-    {id:'neighbor',icon:'👋',name:'隣人挨拶',sub:'引越し挨拶',av:'隣',role:'隣人',ctx:'引越し挨拶、自己紹介、マンションのルール確認'},
-    {id:'repair',icon:'🔧',name:'修理業者',sub:'設備故障・修理依頼',av:'修',role:'修理業者',ctx:'エアコン・水道・電気の故障対応、修理費用説明'},
-    {id:'delivery',icon:'📦',name:'宅配便',sub:'荷物受取・不在票',av:'宅',role:'配達員',ctx:'荷物受取、再配達依頼、置き配説明'},
-    {id:'gas',icon:'🔥',name:'ガス・電気',sub:'開栓・契約変更',av:'GS',role:'ガス会社担当',ctx:'開栓工事の説明、料金プラン、引越し時の手続き'},
+    {id:'realestate',icon:'🏠',name:'不動産・物件',sub:'条件・内見・交渉',av:'不',role:'不動産会社の担当',ctx:'希望条件の相談（家賃・間取り・駅距離）、内見申込、敷金礼金・管理費説明、契約書'},
+    {id:'neighbor',icon:'👋',name:'隣人への挨拶',sub:'引越し・ゴミ・ルール',av:'隣',role:'隣に住む日本人',ctx:'引越し挨拶、自己紹介と手土産の渡し方、ゴミ出しルール、共有スペースの使い方'},
+    {id:'repair',icon:'🔧',name:'修理・設備トラブル',sub:'故障・見積・業者',av:'修',role:'修理業者',ctx:'エアコン・水道・電気・鍵の故障対応、症状の説明、修理費用の見積もり、作業日程調整'},
+    {id:'delivery_receive',icon:'📦',name:'宅配便受取',sub:'不在票・再配達・置き配',av:'宅',role:'配達員',ctx:'荷物の受け取りサイン、不在票の確認、再配達の依頼方法、置き配・コンビニ受け取り'},
+    {id:'utilities',icon:'🔌',name:'電気・ガス・水道',sub:'開栓・料金・変更',av:'GS',role:'電力・ガス会社担当',ctx:'引越し時の開栓工事の流れ、料金プランの比較、節電・節ガス相談、支払い方法変更'},
+    {id:'internet',icon:'📶',name:'ネット・Wi-Fi',sub:'申込・工事・トラブル',av:'NET',role:'インターネット会社サポート',ctx:'回線の申し込み・工事日程調整、Wi-Fiが繋がらないトラブル対応、速度・料金プラン変更'},
+    {id:'mansion',icon:'🏗️',name:'マンション管理',sub:'設備・騒音・申請',av:'管',role:'マンション管理員',ctx:'共有設備（駐車場・ゴミ置き場）の使い方、騒音トラブルの相談、管理費・修繕積立金'},
+    {id:'moving',icon:'🚛',name:'引越し業者',sub:'見積・梱包・当日',av:'引',role:'引越し業者の担当',ctx:'荷物の量・距離の確認、見積もりの説明、梱包資材の渡し方、作業当日のスケジュール'},
+    {id:'renovation',icon:'🪚',name:'リフォーム相談',sub:'内装・設備・予算',av:'改',role:'リフォーム会社の担当',ctx:'リフォームの希望箇所・予算の相談、見積もりと工期説明、素材・デザイン選択の提案'},
+    {id:'conbini_svc',icon:'🖨️',name:'コンビニサービス',sub:'印刷・振込・宅配',av:'便',role:'コンビニ店員',ctx:'マルチコピー機での印刷・スキャン・証明写真、公共料金支払い、宅配便の発送手続き'},
   ]},
-  {id:'work',label:'职场工作',icon:'💼',scenes:[
-    {id:'interview',icon:'🤝',name:'バイト面接',sub:'自己紹介・志望動機',av:'面',role:'カフェの店長',ctx:'アルバイト面接、自己紹介、シフト確認、志望動機'},
-    {id:'fulltime',icon:'👔',name:'就活面接',sub:'新卒・転職面接',av:'就',role:'人事担当者',ctx:'日系企業の正社員面接、志望動機、自己PR、日本語力確認'},
-    {id:'office',icon:'💻',name:'オフィス',sub:'同僚・上司との会話',av:'社',role:'日本人の同僚',ctx:'業務の質問、会議の調整、敬語の使い方、飲み会の誘い'},
-    {id:'meeting',icon:'📊',name:'会議・報告',sub:'プレゼン・議事録',av:'議',role:'会議の司会',ctx:'会議進行、意見を求める、議事録確認、プレゼン発表'},
-    {id:'phone',icon:'📞',name:'電話対応',sub:'ビジネス電話・敬語',av:'電',role:'会社の受付',ctx:'ビジネス電話の受け方、取り次ぎ、伝言、折り返し依頼'},
-    {id:'email',icon:'📧',name:'メール文章',sub:'敬語メール添削',av:'ML',role:'日本語の先生',ctx:'ビジネスメールの書き方を指導、敬語の訂正'},
+  {id:'work',label:'職場・就活',icon:'💼',scenes:[
+    {id:'interview_part',icon:'🤝',name:'アルバイト面接',sub:'志望動機・シフト',av:'面',role:'アルバイト先の店長',ctx:'自己紹介、志望動機、シフト希望と柔軟性、得意なこと・苦手なこと、逆質問'},
+    {id:'interview_full',icon:'👔',name:'正社員・転職面接',sub:'自己PR・キャリア',av:'就',role:'人事担当者',ctx:'自己PR、志望動機、前職の経験、長所短所、転職理由、5年後のビジョン、逆質問'},
+    {id:'office_daily',icon:'💬',name:'職場の日常会話',sub:'挨拶・相談・雑談',av:'社',role:'親切な日本人同僚',ctx:'朝の挨拶・帰りの挨拶、業務の質問、ランチの誘い、困ったことの相談、仕事の雑談'},
+    {id:'boss_report',icon:'🗣️',name:'上司への報告・相談',sub:'報連相・申請・敬語',av:'上',role:'直属の上司',ctx:'業務の進捗報告（ほうれんそう）、問題発生時の相談、指示の確認、有休・残業の申請'},
+    {id:'meeting',icon:'📊',name:'会議・プレゼン',sub:'議事進行・発表・質疑',av:'議',role:'会議の司会者',ctx:'議題説明・進行、資料を使ったプレゼン、意見を求める、質疑応答、次回日程の調整'},
+    {id:'biz_phone',icon:'📞',name:'ビジネス電話',sub:'取次・伝言・折り返し',av:'電',role:'会社の受付担当',ctx:'電話の受け方、担当者への取り次ぎ、不在時の伝言メモ、折り返しの依頼、クレーム対応'},
+    {id:'email_doc',icon:'📧',name:'ビジネスメール',sub:'依頼・お礼・報告',av:'文',role:'日本語ビジネス文書の先生',ctx:'件名・書き出し・結びの言葉、依頼・お礼・謝罪メールの書き方、敬語の使い分け'},
+    {id:'client_meeting',icon:'🤵',name:'取引先・商談',sub:'名刺・提案・交渉',av:'客',role:'取引先の担当者',ctx:'初対面の挨拶と名刺交換のマナー、製品・サービスの提案、価格交渉、接待でのマナー'},
+    {id:'salary_nego',icon:'💴',name:'給与・昇給交渉',sub:'待遇・ボーナス・改善',av:'給',role:'人事部長',ctx:'昇給・給与改定の依頼、ボーナスの確認、福利厚生の質問、勤務条件の改善相談'},
+    {id:'quit_job',icon:'🚪',name:'退職の相談・手続き',sub:'退職届・引継・有休',av:'退',role:'直属の上司',ctx:'退職の意思表示と退職日の調整、引継ぎスケジュール作成、有休消化の申請と相談'},
+    {id:'newcomer',icon:'🌱',name:'新入社員の悩み',sub:'職場・敬語・人間関係',av:'新',role:'面倒見のいい先輩社員',ctx:'職場のルール・慣習の確認、仕事の覚え方の相談、敬語の使い方、歓迎会での挨拶'},
+    {id:'remote_work',icon:'🖥️',name:'テレワーク・リモート',sub:'Zoom・タスク・連絡',av:'テレ',role:'リモートチームのメンバー',ctx:'オンライン会議の入室・操作、画面共有・マイクトラブル対応、チャットでの業務連絡'},
   ]},
-  {id:'school',label:'学校教育',icon:'🎓',scenes:[
-    {id:'class',icon:'📚',name:'授業・質問',sub:'先生への質問',av:'学',role:'大学の先生',ctx:'授業内容の質問、課題の確認、レポートの書き方、試験範囲'},
-    {id:'admission',icon:'🎓',name:'入学手続き',sub:'学校事務・書類',av:'事',role:'学校の事務員',ctx:'入学手続き、書類提出、奨学金、学生証、授業料'},
-    {id:'canteen',icon:'🍱',name:'学食',sub:'食堂での注文',av:'食',role:'学食スタッフ',ctx:'日替わり定食の説明、トレーの返却、食券の使い方'},
-    {id:'clubact',icon:'⚽',name:'クラブ活動',sub:'サークル・部活',av:'部',role:'サークルの先輩',ctx:'サークル勧誘、活動内容説明、入部手続き、練習スケジュール'},
+  {id:'school',label:'学校・学習',icon:'🎓',scenes:[
+    {id:'class_q',icon:'📚',name:'授業・先生への質問',sub:'内容・課題・試験',av:'学',role:'大学・専門学校の先生',ctx:'授業内容の質問、レポートの書き方・注意点、試験範囲の確認、参考文献の調べ方'},
+    {id:'admission',icon:'🎓',name:'入学手続き',sub:'書類・学費・奨学金',av:'事',role:'学校の事務員',ctx:'入学に必要な書類の説明、学費・授業料の支払い方法、奨学金申請の手続き、学生証の発行'},
+    {id:'canteen',icon:'🍱',name:'学食・購買',sub:'メニュー・食券・返却',av:'食',role:'学食スタッフ',ctx:'日替わり定食・メニューの説明、食券機の使い方、トレーの返却場所、購買でのパン・飲み物'},
+    {id:'club',icon:'⚽',name:'部活・サークル',sub:'勧誘・入部・練習',av:'部',role:'サークルの先輩',ctx:'活動内容・費用・頻度の説明、入部の申し込み方法、練習スケジュール・合宿の案内'},
+    {id:'research',icon:'🔬',name:'研究室・ゼミ',sub:'論文・発表・進捗',av:'研',role:'指導教員（教授）',ctx:'卒業論文・修士論文の進捗報告、実験データの解釈、発表練習へのフィードバック'},
+    {id:'jlpt',icon:'🗾',name:'日本語検定・JLPT',sub:'文法・語彙・読解',av:'試',role:'日本語の先生',ctx:'JLPT N5〜N1の文法・語彙・読解の質問、よくある間違いの指摘、模擬試験問題の解説'},
+    {id:'lang_exchange',icon:'🌐',name:'言語交換',sub:'自由会話・文化交流',av:'交',role:'日本人の言語交換パートナー',ctx:'お互いの文化・習慣の紹介、間違った日本語の優しい訂正、日常的な話題での自由会話練習'},
+    {id:'study_group',icon:'📖',name:'グループ勉強',sub:'問題・確認・スケジュール',av:'班',role:'同じ授業を受けている日本人',ctx:'授業の内容確認、試験対策・問題の相談、わからない部分の教え合い、勉強場所・時間調整'},
   ]},
-  {id:'leisure',label:'娱乐休闲',icon:'🎉',scenes:[
-    {id:'hotel',icon:'🏨',name:'ホテル',sub:'チェックイン・部屋',av:'HT',role:'ホテルのフロント',ctx:'チェックイン、アメニティ説明、観光案内、チェックアウト'},
-    {id:'karaoke',icon:'🎤',name:'カラオケ',sub:'部屋・延長・注文',av:'KR',role:'カラオケ店員',ctx:'部屋の予約、延長手続き、フード注文、機器の使い方'},
-    {id:'gym',icon:'💪',name:'ジム',sub:'入会・トレーニング',av:'GY',role:'ジムのスタッフ',ctx:'入会手続き、施設説明、トレーニング機器の使い方、月会費'},
-    {id:'travel',icon:'🗺️',name:'観光案内',sub:'名所・道案内',av:'観',role:'観光案内スタッフ',ctx:'観光スポット紹介、交通手段、おすすめグルメ'},
-    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ確認',av:'SP',role:'アパレル店員',ctx:'サイズ案内、試着室、在庫確認、セール説明、会員カード'},
-    {id:'cinema',icon:'🎬',name:'映画館',sub:'チケット・座席',av:'映',role:'映画館スタッフ',ctx:'チケット購入、座席案内、ポップコーン注文、上映時間'},
+  {id:'life_chat',label:'日常会話',icon:'💬',scenes:[
+    {id:'self_intro',icon:'🙋',name:'自己紹介',sub:'名前・出身・趣味・仕事',av:'己',role:'初めて会った日本人',ctx:'名前・出身地・仕事・趣味の紹介、日本語を勉強したきっかけ、好きな日本食・観光地の話'},
+    {id:'weather',icon:'🌤️',name:'天気・季節の話',sub:'今日・行事・好き',av:'雑',role:'近所に住む親しい日本人',ctx:'今日の天気・気温の話、好きな季節とその理由、花見・紅葉・雪・梅雨などの話題'},
+    {id:'hobby',icon:'🎮',name:'趣味の話',sub:'好きなこと・おすすめ',av:'趣',role:'趣味の合う日本人仲間',ctx:'ゲーム・アニメ・音楽・読書・スポーツなどの趣味、おすすめ作品・場所の紹介、一緒にやろうの誘い'},
+    {id:'travel',icon:'🗼',name:'旅行・観光の話',sub:'行った場所・計画',av:'旅',role:'旅行好きな日本人',ctx:'行きたい・行った場所の話、おすすめ観光スポット、旅行の計画、交通手段・お土産の話'},
+    {id:'health_life',icon:'💪',name:'健康・運動の話',sub:'スポーツ・ダイエット',av:'健',role:'健康意識の高い日本人',ctx:'最近始めたスポーツ・運動習慣、ダイエットの方法、睡眠の悩み、健康的な食生活の話'},
+    {id:'love',icon:'💕',name:'恋愛・人間関係',sub:'相談・アドバイス',av:'恋',role:'仲のいい日本人の友人',ctx:'恋愛の悩み・告白・失恋の話、友人関係のトラブル、家族との関係、アドバイスの求め方'},
+    {id:'money_life',icon:'💰',name:'お金・節約の話',sub:'節約・ポイント・投資',av:'金',role:'お金の管理が上手な日本人',ctx:'節約の方法、スーパーの特売・ポイ活・キャッシュレス活用、投資の基礎知識、家計管理'},
+    {id:'news',icon:'📰',name:'ニュース・時事',sub:'社会・環境・技術',av:'時',role:'社会に詳しい日本人知人',ctx:'最近のニュース、社会問題への意見、環境問題・AI・技術の進歩、日本と他国の比較'},
+    {id:'sns_life',icon:'📱',name:'SNS・スマホの話',sub:'アプリ・バズ・流行',av:'SNS',role:'SNSが大好きな日本人',ctx:'インスタ・TikTok・YouTubeの話、フォロー・いいね文化、バズった動画、おすすめアプリ'},
+    {id:'pet',icon:'🐱',name:'ペット・動物の話',sub:'飼い方・エピソード',av:'ペ',role:'大のペット好きな日本人',ctx:'猫・犬などのペットの話、飼育の苦労・喜び、かわいいエピソード、動物園・水族館の話'},
+    {id:'future',icon:'🌙',name:'将来の夢・目標',sub:'キャリア・ビジョン',av:'夢',role:'将来について話したい日本人',ctx:'将来やりたいこと、仕事の目標、住みたい場所、5年後・10年後の生活イメージ'},
+    {id:'seasons',icon:'🌸',name:'季節の行事・文化',sub:'祭り・年中行事・風習',av:'季',role:'日本文化に詳しい日本人',ctx:'お正月・ひな祭り・お盆などの行事の説明、地域の祭り、季節の食べ物の話'},
+  ]},
+  {id:'leisure',label:'娯楽・休暇',icon:'🎉',scenes:[
+    {id:'hotel',icon:'🏨',name:'ホテル',sub:'チェックイン・設備・観光',av:'HT',role:'ホテルのフロント',ctx:'チェックイン手続き、部屋タイプ確認、アメニティ・設備説明、観光スポット案内、チェックアウト'},
+    {id:'ryokan',icon:'🏯',name:'旅館・温泉宿',sub:'仲居・浴衣・食事',av:'旅',role:'旅館の仲居さん',ctx:'お部屋への案内、浴衣の着方、温泉の使い方・マナー、夕食・朝食の時間確認、貸切風呂'},
+    {id:'karaoke',icon:'🎤',name:'カラオケ',sub:'部屋・延長・フード',av:'KR',role:'カラオケ店員',ctx:'部屋のサイズ・時間の選択、延長手続き、フード・ドリンクの注文、機器の使い方・採点'},
+    {id:'gym',icon:'💪',name:'ジム・スポーツクラブ',sub:'入会・体験・マシン',av:'GY',role:'ジムのスタッフ',ctx:'体験入会の流れ、施設・マシンの説明・使い方、パーソナルトレーニング、月会費・退会'},
+    {id:'cinema',icon:'🎬',name:'映画館',sub:'チケット・座席・売店',av:'映',role:'映画館スタッフ',ctx:'上映時間・座席の選択、チケット購入、字幕・吹き替えの違い、ポップコーン・ドリンク注文'},
+    {id:'theme_park',icon:'🎡',name:'テーマパーク',sub:'アトラクション・待ち時間',av:'遊',role:'テーマパークのスタッフ',ctx:'入場券の購入、アトラクションの待ち時間確認、ファストパス・優先券、レストランの予約'},
+    {id:'museum',icon:'🏛️',name:'美術館・博物館',sub:'観覧・ガイド・撮影',av:'美',role:'美術館のスタッフ',ctx:'入場料・チケット購入、音声ガイドの借り方・使い方、展示の説明、写真撮影ルールの確認'},
+    {id:'shopping',icon:'👗',name:'ショッピング',sub:'試着・サイズ・セール',av:'SP',role:'アパレルショップの店員',ctx:'サイズ・デザインの相談、試着室の案内、在庫確認、セール内容の説明、会員カード・ポイント'},
+    {id:'outdoor',icon:'⛺',name:'キャンプ・アウトドア',sub:'用品選び・初心者',av:'⛺',role:'アウトドアショップの店員',ctx:'テント・バーベキュー道具の選び方、キャンプ場の予約方法、初心者向け必需品のアドバイス'},
+    {id:'onsen',icon:'♨️',name:'温泉・銭湯',sub:'入浴・マナー・食堂',av:'湯',role:'温泉施設のスタッフ',ctx:'入浴料・コース選択、タオル・アメニティの確認、温泉マナー（タトゥー・長髪）、食堂メニュー'},
+    {id:'live',icon:'🎵',name:'コンサート・ライブ',sub:'チケット・グッズ・マナー',av:'ライブ',role:'ライブ会場のスタッフ',ctx:'チケット確認・座席案内、グッズ販売・購入方法、開演時間・終演後の案内、撮影禁止ルール'},
+    {id:'sports',icon:'⚾',name:'スポーツ観戦',sub:'応援・ルール・グッズ',av:'観',role:'隣の席の熱心なサポーター',ctx:'チームの応援の仕方・掛け声、ルールの説明、一緒に応援しながらの会話、試合後の感想'},
+  ]},
+  {id:'health',label:'医療・健康',icon:'🏥',scenes:[
+    {id:'naika',icon:'🩺',name:'内科・クリニック',sub:'初診・症状・診断',av:'医',role:'内科の担当医師',ctx:'初診での症状説明（発熱・咳・頭痛・倦怠感）、既往歴・アレルギー確認、診断の説明、投薬・処方'},
+    {id:'dental',icon:'🦷',name:'歯医者・歯科',sub:'虫歯・治療・クリーニング',av:'歯',role:'歯科医師',ctx:'歯の痛み・しみる症状の説明、レントゲン・治療内容の説明、治療回数・費用の確認、定期健診'},
+    {id:'eye',icon:'👁️',name:'眼科・コンタクト',sub:'視力・処方・ドライアイ',av:'眼',role:'眼科医',ctx:'視力低下の悩み相談、コンタクトレンズ・メガネの処方、目の疲れ・ドライアイ・充血の相談'},
+    {id:'emergency_room',icon:'🚑',name:'救急・急患',sub:'緊急症状・アレルギー',av:'救',role:'救急外来の受付',ctx:'急病・怪我での来院、症状の緊急度を説明、アレルギー・常用薬の確認、保険証がない場合の対応'},
+    {id:'mental',icon:'🧠',name:'心療内科・カウンセリング',sub:'ストレス・不眠・不安',av:'心',role:'カウンセラー・心療内科医',ctx:'ストレス・不眠・不安・パニックの症状相談、生活習慣の確認、治療方針・通院スケジュール説明'},
+    {id:'dispensary',icon:'💊',name:'調剤薬局',sub:'処方箋・副作用・服薬',av:'調',role:'調剤薬剤師',ctx:'処方箋の提出・確認、薬の効能・副作用・飲み合わせの説明、ジェネリック医薬品の提案'},
+    {id:'beauty_clinic',icon:'✨',name:'美容クリニック',sub:'脱毛・シミ・相談',av:'美',role:'美容クリニックのカウンセラー',ctx:'脱毛・シミ取り・美白・プチ整形の施術相談、料金プラン・モニター制度の説明、副作用の確認'},
+    {id:'yoga',icon:'🧘',name:'ヨガ・フィットネス',sub:'体験・効果・プログラム',av:'ヨガ',role:'ヨガ・フィットネスインストラクター',ctx:'体験レッスンの流れ、効果・難易度の説明、週のプログラム・スケジュール確認、入会手続き'},
   ]},
   {id:'techinterview',label:'⚡ 技術面接',icon:'⚡',scenes:[
     {id:'ti_general',icon:'🤝',name:'面接・基本',sub:'自己紹介・志望動機',av:'面',_g:'bg',role:'日系メーカーの人事担当者',ctx:'技術系職種の一次面接。自己紹介、技術背景、志望動機、強み弱み、キャリアビジョンを順に質問し深掘りする。'},
@@ -566,11 +646,14 @@ const CATS=[
     {id:'ti_eplan',icon:'🖥️',name:'EPLAN設計',sub:'EPLAN Electric・回路図',av:'EP',_g:'bs',role:'EPLAN認定エンジニア',ctx:'EPLAN Electric P8操作、部品マスタ、PLC設計を質問する'},
     {id:'ti_scada',icon:'📡',name:'SCADA・HMI',sub:'監視制御・データ収集',av:'SC',_g:'bs',role:'制御システムインテグレーターの面接官',ctx:'SCADAソフト、HMI画面設計、OPC-UA・Modbus通信を質問する'},
   ]},
-  {id:'emergency',label:'紧急情况',icon:'🆘',scenes:[
-    {id:'lost',icon:'🔍',name:'道に迷った',sub:'道案内・Google Map',av:'迷',role:'通りすがりの人',ctx:'道に迷った時の助けを求める、地図を見ながら説明、目印の説明'},
-    {id:'sick',icon:'🤒',name:'体の不調',sub:'救急・急病',av:'救',role:'救急病院の受付',ctx:'急病・怪我での救急来院、症状の説明、アレルギー確認'},
-    {id:'accident',icon:'⚠️',name:'事故・トラブル',sub:'報告・保険',av:'事',role:'警察・保険会社',ctx:'交通事故報告、物品破損のお詫び、保険申請の説明'},
-    {id:'stolen',icon:'🔒',name:'紛失・盗難',sub:'警察への届出',av:'届',role:'警察の窓口',ctx:'パスポート紛失、財布盗難、遺失物センター、届出書類'},
+  {id:'emergency',label:'緊急・トラブル',icon:'🆘',scenes:[
+    {id:'lost',icon:'🔍',name:'道に迷った',sub:'道案内・地図・目印',av:'迷',role:'通りすがりの親切な日本人',ctx:'道に迷った時の助けを求める、地図を見ながらの説明、目印を使った案内、スマホ地図の活用'},
+    {id:'sick',icon:'🤒',name:'急病・体調不良',sub:'救急・症状・アレルギー',av:'救',role:'救急病院の受付',ctx:'急病・怪我での来院、症状の緊急説明、アレルギー・常用薬確認、保険証未持参時の対応'},
+    {id:'accident',icon:'⚠️',name:'事故・トラブル',sub:'警察・保険・謝罪',av:'事',role:'警察官・保険会社担当',ctx:'交通事故の報告、物品破損のお詫び、保険申請の流れ、目撃者への確認、示談の話し合い'},
+    {id:'stolen',icon:'🔒',name:'紛失・盗難届出',sub:'警察・遺失物・再発行',av:'届',role:'警察窓口の担当者',ctx:'パスポート・財布・スマホの紛失・盗難届出、遺失物センターへの問い合わせ、再発行手続き'},
+    {id:'disaster',icon:'🌊',name:'災害・避難',sub:'地震・台風・避難所',av:'避',role:'避難所の運営スタッフ',ctx:'地震・台風・洪水時の避難誘導、避難所での生活ルール・物資の受け取り、安否確認方法'},
+    {id:'complaint',icon:'😤',name:'クレーム・苦情',sub:'不具合・返金・解決',av:'苦',role:'店舗・サービスの責任者',ctx:'商品の不具合・サービスへの不満を丁寧に伝える、返金・交換の要求、再発防止策の確認'},
+    {id:'card_stop',icon:'💳',name:'カード紛失・停止',sub:'カード会社・再発行',av:'カ',role:'クレジットカード会社のオペレーター',ctx:'クレジットカードの紛失・盗難報告、不正使用の確認、利用停止手続き、新カードの再発行申請'},
   ]},
 ];
 const TIG=[
@@ -606,17 +689,20 @@ function selCat(id){
 }
 function renderScenes(){
   const g=document.getElementById('sceneGrid');
+  // 随机按钮行（始终在网格前显示）
+  const randRow=`<div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;padding-bottom:6px;border-bottom:1px solid var(--border);margin-bottom:2px">
+    <span style="font-size:10px;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.08em;flex:1">本分类场景</span>
+    <button onclick="randomCatScene()" style="font-size:11px;padding:3px 12px;border-radius:20px;border:1.5px solid rgba(109,40,217,.2);background:#f5f3ff;color:#7c3aed;cursor:pointer;font-family:inherit;font-weight:600;transition:all .2s" onmouseover="this.style.background='#ede9fe'" onmouseout="this.style.background='#f5f3ff'">🎲 本类随机</button>
+  </div>`;
   if(S.cat==='techinterview'){
-    let h='';
+    let h=randRow;
     TIG.forEach(gr=>{
       h+=`<div class="ti-sec">${gr.label}</div>`;
       gr.ids.forEach(id=>{
         const sc=ALL[id];if(!sc)return;
-        h+=`<div class="scene-card ${gr.cls} ${S.scene?.id===id?'active':''}" onclick="selScene('${id}')">
-          <div class="sc-icon">${sc.icon}</div>
-          <span class="ti-badge ${gr.cls}">${TIBL[gr.cls]}</span>
-          <div class="sc-name">${sc.name}</div>
-          <div class="sc-sub">${sc.sub}</div>
+        h+=`<div class="scene-card ${gr.cls} ${S.scene?.id===id?'active':''}" onclick="selScene('${id}')" style="flex-direction:row;align-items:center;gap:8px;padding:8px 11px">
+          <span style="font-size:15px;flex-shrink:0">${sc.icon}</span>
+          <div style="min-width:0;flex:1"><div class="sc-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sc.name}</div><div class="sc-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sc.sub}</div></div>
         </div>`;
       });
     });
@@ -624,13 +710,20 @@ function renderScenes(){
   }else{
     const cat=CATS.find(c=>c.id===S.cat);
     if(!cat)return;
-    g.innerHTML=cat.scenes.map(sc=>`
-      <div class="scene-card ${S.scene?.id===sc.id?'active':''}" onclick="selScene('${sc.id}')">
-        <div class="sc-icon">${sc.icon}</div>
-        <div class="sc-name">${sc.name}</div>
-        <div class="sc-sub">${sc.sub}</div>
+    g.innerHTML=randRow+cat.scenes.map(sc=>`
+      <div class="scene-card ${S.scene?.id===sc.id?'active':''}" onclick="selScene('${sc.id}')" style="flex-direction:row;align-items:center;gap:8px;padding:8px 11px">
+        <span style="font-size:15px;flex-shrink:0">${sc.icon}</span>
+        <div style="min-width:0;flex:1"><div class="sc-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sc.name}</div><div class="sc-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sc.sub}</div></div>
       </div>`).join('');
   }
+}
+function randomCatScene(){
+  if(S.loading)return;
+  const cat=CATS.find(c=>c.id===S.cat);
+  if(!cat||!cat.scenes.length)return;
+  const sc=cat.scenes[Math.floor(Math.random()*cat.scenes.length)];
+  selScene(sc.id);
+  showToast('本类随机',`🎲「${cat.label}」→「${sc.name}」，开始！`,'success');
 }
 function toggleSceneGrid(){
   sceneGridCollapsed=!sceneGridCollapsed;
